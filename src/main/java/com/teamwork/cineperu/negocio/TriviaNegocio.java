@@ -61,7 +61,7 @@ public class TriviaNegocio {
                     beanTriviaPregunta.setPregunta(itemPregunta.getPregunta());
 
                     List<TriviaDetalleRespuesta> listTriviaDetalleRespuesta =
-                            triviaDetalleRespuestaRepositorio.buscarPreguntas(trivia.getCodigoTrivia());
+                            triviaDetalleRespuestaRepositorio.buscarPreguntas(itemPregunta.getCodigoDetalleTrivia());
 
                     List<BeanTriviaRespuesta> respuestas = new ArrayList<>();
 
