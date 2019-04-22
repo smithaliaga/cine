@@ -2,6 +2,7 @@ package com.teamwork.cineperu.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teamwork.cineperu.entidad.Entrada;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.*;
 import com.teamwork.cineperu.entidad.response.*;
@@ -76,7 +77,14 @@ public class UsuarioServicioRest {
 
             ObjectMapper mapper = new ObjectMapper();
 
-            String jsonString = mapper.writeValueAsString(sendTransactionBuyTicketRequest);
+            Entrada entrada = new Entrada();
+            entrada.setCodigoSeguridad(sendTransactionBuyTicketRequest.getCodigoSeguridad());
+            entrada.setFechaExpiracion(sendTransactionBuyTicketRequest.getFechaExpiracion());
+            entrada.setNombreTitular(sendTransactionBuyTicketRequest.getNombreTitular());
+            entrada.setNumeroTarjeta(sendTransactionBuyTicketRequest.getNumeroTarjeta());
+            entrada.setMonto(20.00);
+
+            String jsonString = mapper.writeValueAsString(entrada);
             jmsProducer.send(jsonString);
 
         } catch (JsonProcessingException e) {
