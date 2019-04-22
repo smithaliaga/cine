@@ -1,10 +1,15 @@
 package com.teamwork.cineperu.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.*;
 import com.teamwork.cineperu.entidad.response.*;
+import com.teamwork.cineperu.jms.JmsProducer;
 import com.teamwork.cineperu.negocio.PeliculaNegocio;
 import com.teamwork.cineperu.negocio.PersonaUsuarioNegocio;
 import com.teamwork.cineperu.negocio.TriviaNegocio;
+import com.teamwork.cineperu.negocio.UsuarioTokenNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +25,10 @@ public class UsuarioServicioRest {
     private PeliculaNegocio peliculaNegocio;
     @Autowired
     private TriviaNegocio triviaNegocio;
+    @Autowired
+    private UsuarioTokenNegocio usuarioTokenNegocio;
+    @Autowired
+    private JmsProducer jmsProducer;
 
     @PostMapping("/WS_RegisterUser")
     public EntityWSBase WS_RegisterUser(@RequestBody RegisterUserRequest registerUserRequest){
@@ -49,5 +58,32 @@ public class UsuarioServicioRest {
     @PostMapping("/WS_GetTriviaUser")
     public RegisterIntentTriviaResponse WS_GetTriviaUser(@RequestBody GetTriviaUsuarioRequest getTriviaUsuarioRequest){
         return triviaNegocio.obtenerTriviaUsuario(getTriviaUsuarioRequest);
+    }
+
+    @PostMapping("/WS_SendTransactionBuyTicket")
+    public EntityWSBase WS_SendTransactionBuyTicket(@RequestBody SendTransactionBuyTicketRequest sendTransactionBuyTicketRequest){
+        EntityWSBase entityWSBase = new EntityWSBase();
+        entityWSBase.setErrorCode(0);
+        entityWSBase.setErrorMessage("Solicitud enviada a procesar");
+
+        try {
+            UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(sendTransactionBuyTicketRequest.getToken());
+            if (usuarioToken == null){
+                entityWSBase.setErrorCode(100);
+                entityWSBase.setErrorMessage("Credencial de acceso vencida o incorrecta");
+                return entityWSBase;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            String jsonString = mapper.writeValueAsString(sendTransactionBuyTicketRequest);
+            jmsProducer.send(jsonString);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            entityWSBase.setErrorCode(9);
+            entityWSBase.setErrorMessage("Error al procesar solicitud de cola");
+        }
+        return entityWSBase;
     }
 }
