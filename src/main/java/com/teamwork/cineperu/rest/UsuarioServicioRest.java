@@ -85,7 +85,8 @@ public class UsuarioServicioRest {
             entrada.setMonto(20.00);
 
             String jsonString = mapper.writeValueAsString(entrada);
-            jmsProducer.send(jsonString);
+            jmsProducer.enviarRecibir(jsonString);
+            //jmsProducer.send(jsonString);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();

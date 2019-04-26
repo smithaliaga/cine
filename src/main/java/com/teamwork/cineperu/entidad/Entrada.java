@@ -2,6 +2,7 @@ package com.teamwork.cineperu.entidad;
 
 public class Entrada {
 
+    private Long codigoEntrada;
     private String numeroTarjeta;
     private String nombreTitular;
     private String fechaExpiracion;
@@ -46,5 +47,13 @@ public class Entrada {
 
     public void setMonto(double monto) {
         this.monto = monto;
+    }
+
+    public Long getCodigoEntrada() {
+        return codigoEntrada;
+    }
+
+    public void setCodigoEntrada(Long codigoEntrada) {
+        this.codigoEntrada = codigoEntrada;
     }
 }
