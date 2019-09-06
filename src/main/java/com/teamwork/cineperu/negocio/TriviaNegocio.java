@@ -49,9 +49,11 @@ public class TriviaNegocio {
 
             SimpleDateFormat sdp = new SimpleDateFormat("dd/MM/yyyy");
             Trivia trivia = triviaRepositorio.buscarTrivia(sdp.parse(sdp.format(new Date())));
+            System.out.println("trivia:" + trivia);
             if (trivia != null){
 
                 List<TriviaDetalle> listTriviaDetalle = triviaDetalleRepositorio.buscarPreguntas(trivia.getCodigoTrivia());
+                System.out.println("listTriviaDetalle.size:" + listTriviaDetalle.size());
                 List<BeanTriviaPregunta> preguntas = new ArrayList<>();
 
                 BeanTriviaPregunta beanTriviaPregunta = null;
@@ -62,6 +64,7 @@ public class TriviaNegocio {
 
                     List<TriviaDetalleRespuesta> listTriviaDetalleRespuesta =
                             triviaDetalleRespuestaRepositorio.buscarPreguntas(itemPregunta.getCodigoDetalleTrivia());
+                    System.out.println("listTriviaDetalleRespuesta.size:" + listTriviaDetalleRespuesta.size());
 
                     List<BeanTriviaRespuesta> respuestas = new ArrayList<>();
 
@@ -77,9 +80,10 @@ public class TriviaNegocio {
                     beanTriviaPregunta.setRespuestas(respuestas);
                     preguntas.add(beanTriviaPregunta);
                 }
-
                 getListTriviaResponse.setCodigoTrivia(trivia.getCodigoTrivia());
                 getListTriviaResponse.setPreguntas(preguntas);
+                System.out.println("getCodigoTrivia:" + getListTriviaResponse.getCodigoTrivia());
+                System.out.println("getPreguntas.size:" + getListTriviaResponse.getPreguntas().size());
             }
         }catch (Exception ex){
             ex.printStackTrace();
