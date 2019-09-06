@@ -13,6 +13,9 @@ import com.teamwork.cineperu.repositorio.TriviaDetalleRepositorio;
 import com.teamwork.cineperu.repositorio.TriviaDetalleRespuestaRepositorio;
 import com.teamwork.cineperu.repositorio.TriviaRepositorio;
 import com.teamwork.cineperu.repositorio.TriviaUsuarioRepositorio;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,8 @@ public class TriviaNegocio {
     private UsuarioTokenNegocio usuarioTokenNegocio;
     @Autowired
     private TriviaUsuarioRepositorio triviaUsuarioRepositorio;
+    
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GetListTriviaResponse listarTrivia(UserTokenRequest userTokenRequest){
         GetListTriviaResponse getListTriviaResponse = new GetListTriviaResponse();
@@ -50,6 +55,7 @@ public class TriviaNegocio {
             SimpleDateFormat sdp = new SimpleDateFormat("dd/MM/yyyy");
             Trivia trivia = triviaRepositorio.buscarTrivia(sdp.parse(sdp.format(new Date())));
             System.out.println("trivia:" + trivia);
+            logger.info("trivia:" + trivia);
             if (trivia != null){
 
                 List<TriviaDetalle> listTriviaDetalle = triviaDetalleRepositorio.buscarPreguntas(trivia.getCodigoTrivia());
@@ -65,6 +71,7 @@ public class TriviaNegocio {
                     List<TriviaDetalleRespuesta> listTriviaDetalleRespuesta =
                             triviaDetalleRespuestaRepositorio.buscarPreguntas(itemPregunta.getCodigoDetalleTrivia());
                     System.out.println("listTriviaDetalleRespuesta.size:" + listTriviaDetalleRespuesta.size());
+                    logger.info("listTriviaDetalleRespuesta.size:" + listTriviaDetalleRespuesta.size());
 
                     List<BeanTriviaRespuesta> respuestas = new ArrayList<>();
 
@@ -84,6 +91,8 @@ public class TriviaNegocio {
                 getListTriviaResponse.setPreguntas(preguntas);
                 System.out.println("getCodigoTrivia:" + getListTriviaResponse.getCodigoTrivia());
                 System.out.println("getPreguntas.size:" + getListTriviaResponse.getPreguntas().size());
+                logger.info("getCodigoTrivia:" + getListTriviaResponse.getCodigoTrivia());
+                logger.info("getPreguntas.size:" + getListTriviaResponse.getPreguntas().size());
             }
         }catch (Exception ex){
             ex.printStackTrace();
