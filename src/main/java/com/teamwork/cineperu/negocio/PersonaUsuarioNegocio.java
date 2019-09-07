@@ -8,6 +8,7 @@ import com.teamwork.cineperu.entidad.request.RegisterUserRequest;
 import com.teamwork.cineperu.entidad.request.UserAuthenticateRequest;
 import com.teamwork.cineperu.entidad.request.UserTokenRequest;
 import com.teamwork.cineperu.entidad.response.EntityWSBase;
+import com.teamwork.cineperu.entidad.response.PersonaResponse;
 import com.teamwork.cineperu.entidad.response.UserAuthenticateResponse;
 import com.teamwork.cineperu.entidad.response.UserGetInformationResponse;
 import com.teamwork.cineperu.repositorio.PersonaRepositorio;
@@ -128,7 +129,18 @@ public class PersonaUsuarioNegocio {
 				userGetInformationResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return userGetInformationResponse;
 			} else {
-				userGetInformationResponse.setPersona(usuarioToken.getUsuario().getPersona());
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				Persona persona = usuarioToken.getUsuario().getPersona();
+				PersonaResponse personaResponse = new PersonaResponse();
+				personaResponse.setApellidos(persona.getApellidos());
+				personaResponse.setCodigoPersona(persona.getCodigoPersona());
+				personaResponse.setDireccion(persona.getDireccion());
+				personaResponse.setDni(persona.getDni());
+				personaResponse.setEmail(persona.getEmail());
+				personaResponse.setFechaNacimiento(sdf.format(persona.getFechaNacimiento()));
+				personaResponse.setGenero(persona.getGenero().toString());
+				personaResponse.setNombres(persona.getNombres());
+				userGetInformationResponse.setPersona(personaResponse);
 			}
 
 		} catch (Exception ex) {

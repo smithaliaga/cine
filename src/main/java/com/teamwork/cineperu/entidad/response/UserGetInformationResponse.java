@@ -1,16 +1,14 @@
 package com.teamwork.cineperu.entidad.response;
 
-import com.teamwork.cineperu.entidad.Persona;
-
 public class UserGetInformationResponse extends EntityWSBase {
 
-	private Persona persona;
+	private PersonaResponse persona;
 
-	public Persona getPersona() {
+	public PersonaResponse getPersona() {
 		return persona;
 	}
 
-	public void setPersona(Persona persona) {
+	public void setPersona(PersonaResponse persona) {
 		this.persona = persona;
 	}
 
