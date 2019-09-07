@@ -6,8 +6,10 @@ import com.teamwork.cineperu.entidad.Usuario;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.RegisterUserRequest;
 import com.teamwork.cineperu.entidad.request.UserAuthenticateRequest;
+import com.teamwork.cineperu.entidad.request.UserTokenRequest;
 import com.teamwork.cineperu.entidad.response.EntityWSBase;
 import com.teamwork.cineperu.entidad.response.UserAuthenticateResponse;
+import com.teamwork.cineperu.entidad.response.UserGetInformationResponse;
 import com.teamwork.cineperu.repositorio.PersonaRepositorio;
 import com.teamwork.cineperu.repositorio.UsuarioRepositorio;
 import com.teamwork.cineperu.repositorio.UsuarioTokenRepositorio;
@@ -21,98 +23,119 @@ import java.util.UUID;
 @Service
 public class PersonaUsuarioNegocio {
 
-    @Autowired
-    private PersonaRepositorio personaRepositorio;
+	@Autowired
+	private PersonaRepositorio personaRepositorio;
+	@Autowired
+	private UsuarioRepositorio usuarioRepositorio;
+	@Autowired
+	private UsuarioTokenRepositorio usuarioTokenRepositorio;
+	@Autowired
+	private UsuarioTokenNegocio usuarioTokenNegocio;
 
-    @Autowired
-    private UsuarioRepositorio usuarioRepositorio;
+	public EntityWSBase registrarPersonaUsuario(RegisterUserRequest registerUserRequest) {
+		EntityWSBase entityWSBase = new EntityWSBase();
+		entityWSBase.setErrorCode(0);
+		entityWSBase.setErrorMessage("Se registro el usuario satisfactoriamente");
+		try {
 
-    @Autowired
-    private UsuarioTokenRepositorio usuarioTokenRepositorio;
+			Persona persona = personaRepositorio.buscarPorDNI(registerUserRequest.getDni());
+			if (persona != null) {
+				entityWSBase.setErrorCode(3);
+				entityWSBase.setErrorMessage("Ya existe una persona registrada con el mismo DNI");
+				return entityWSBase;
+			}
 
-    public EntityWSBase registrarPersonaUsuario(RegisterUserRequest registerUserRequest){
-        EntityWSBase entityWSBase = new EntityWSBase();
-        entityWSBase.setErrorCode(0);
-        entityWSBase.setErrorMessage("Se registro el usuario satisfactoriamente");
-        try{
+			Usuario usuario = usuarioRepositorio.buscarUsuarioPorCredencial(registerUserRequest.getUsuario(),
+					EncriptarClave.encriptar(registerUserRequest.getClave()));
+			if (usuario != null) {
+				entityWSBase.setErrorCode(4);
+				entityWSBase.setErrorMessage("Ya existe un usuario con las credenciales ingresadas");
+				return entityWSBase;
+			}
 
-            Persona persona = personaRepositorio.buscarPorDNI(registerUserRequest.getDni());
-            if (persona != null){
-                entityWSBase.setErrorCode(3);
-                entityWSBase.setErrorMessage("Ya existe una persona registrada con el mismo DNI");
-                return entityWSBase;
-            }
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-            Usuario usuario = usuarioRepositorio.buscarUsuarioPorCredencial(
-                    registerUserRequest.getUsuario(),
-                    EncriptarClave.encriptar(registerUserRequest.getClave()));
-            if (usuario != null){
-                entityWSBase.setErrorCode(4);
-                entityWSBase.setErrorMessage("Ya existe un usuario con las credenciales ingresadas");
-                return entityWSBase;
-            }
+			persona = new Persona();
+			persona.setDni(registerUserRequest.getDni());
+			persona.setNombres(registerUserRequest.getNombres());
+			persona.setApellidos(registerUserRequest.getApellidos());
+			persona.setDireccion(registerUserRequest.getDireccion());
+			persona.setEmail(registerUserRequest.getEmail());
+			persona.setGenero(registerUserRequest.getGenero().charAt(0));
+			persona.setFechaNacimiento(sdf.parse(registerUserRequest.getFechaNacimiento()));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			persona = personaRepositorio.save(persona);
 
-            persona = new Persona();
-            persona.setDni(registerUserRequest.getDni());
-            persona.setNombres(registerUserRequest.getNombres());
-            persona.setApellidos(registerUserRequest.getApellidos());
-            persona.setDireccion(registerUserRequest.getDireccion());
-            persona.setEmail(registerUserRequest.getEmail());
-            persona.setGenero(registerUserRequest.getGenero().charAt(0));
-            persona.setFechaNacimiento(sdf.parse(registerUserRequest.getFechaNacimiento()));
+			usuario = new Usuario();
+			usuario.setUsuario(registerUserRequest.getUsuario());
+			usuario.setClave(EncriptarClave.encriptar(registerUserRequest.getClave()));
+			usuario.setEstadoRegistro(true);
+			usuario.setPersona(persona);
 
-            persona = personaRepositorio.save(persona);
+			usuario = usuarioRepositorio.save(usuario);
 
-            usuario = new Usuario();
-            usuario.setUsuario(registerUserRequest.getUsuario());
-            usuario.setClave(EncriptarClave.encriptar(registerUserRequest.getClave()));
-            usuario.setEstadoRegistro(true);
-            usuario.setPersona(persona);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			entityWSBase.setErrorCode(1);
+			entityWSBase.setErrorMessage("Error en procesos");
+		}
+		return entityWSBase;
+	}
 
-            usuario = usuarioRepositorio.save(usuario);
+	public UserAuthenticateResponse autenticarUsuario(UserAuthenticateRequest userAuthenticateRequest) {
+		UserAuthenticateResponse userAuthenticateResponse = new UserAuthenticateResponse();
+		userAuthenticateResponse.setErrorCode(0);
+		userAuthenticateResponse.setErrorMessage("Credenciales de usuario correctas");
+		try {
+			Usuario usuario = usuarioRepositorio.buscarUsuarioPorCredencial(userAuthenticateRequest.getUsuario(),
+					EncriptarClave.encriptar(userAuthenticateRequest.getClave()));
+			if (usuario != null) {
+				usuarioTokenRepositorio.descativarTokenActivo(usuario.getCodigoUsuario());
 
-        }catch (Exception ex){
-            ex.printStackTrace();
-            entityWSBase.setErrorCode(1);
-            entityWSBase.setErrorMessage("Error en procesos");
-        }
-        return entityWSBase;
-    }
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
 
-    public UserAuthenticateResponse autenticarUsuario(UserAuthenticateRequest userAuthenticateRequest){
-        UserAuthenticateResponse userAuthenticateResponse = new UserAuthenticateResponse();
-        userAuthenticateResponse.setErrorCode(0);
-        userAuthenticateResponse.setErrorMessage("Credenciales de usuario correctas");
-        try{
-            Usuario usuario = usuarioRepositorio.buscarUsuarioPorCredencial(
-                    userAuthenticateRequest.getUsuario(),
-                    EncriptarClave.encriptar(userAuthenticateRequest.getClave()));
-            if (usuario != null){
-                usuarioTokenRepositorio.descativarTokenActivo(usuario.getCodigoUsuario());
+				UsuarioToken usuarioToken = new UsuarioToken();
+				usuarioToken.setToken(UUID.randomUUID() + sdf.format(new Date()));
+				usuarioToken.setEstadoRegistro(true);
+				usuarioToken.setUsuario(usuario);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmSS");
+				usuarioTokenRepositorio.save(usuarioToken);
 
-                UsuarioToken usuarioToken = new UsuarioToken();
-                usuarioToken.setToken(UUID.randomUUID() + sdf.format(new Date()));
-                usuarioToken.setEstadoRegistro(true);
-                usuarioToken.setUsuario(usuario);
+				userAuthenticateResponse.setToken(usuarioToken.getToken());
 
-                usuarioTokenRepositorio.save(usuarioToken);
+			} else {
+				userAuthenticateResponse.setErrorCode(2);
+				userAuthenticateResponse.setErrorMessage("Las credenciales ingresadas son inválidas");
+			}
 
-                userAuthenticateResponse.setToken(usuarioToken.getToken());
+		} catch (Exception ex) {
+			userAuthenticateResponse.setErrorCode(1);
+			userAuthenticateResponse.setErrorMessage("Error en procesos");
+			ex.printStackTrace();
+		}
+		return userAuthenticateResponse;
+	}
 
-            }else{
-                userAuthenticateResponse.setErrorCode(2);
-                userAuthenticateResponse.setErrorMessage("Las credenciales ingresadas son inválidas");
-            }
+	public UserGetInformationResponse obtenerInformacionUsuario(UserTokenRequest userTokenRequest) {
+		UserGetInformationResponse userGetInformationResponse = new UserGetInformationResponse();
+		userGetInformationResponse.setErrorCode(0);
+		userGetInformationResponse.setErrorMessage("Se obtuvo información del usuario satisfactoriamente");
+		try {
 
-        }catch (Exception ex){
-            userAuthenticateResponse.setErrorCode(1);
-            userAuthenticateResponse.setErrorMessage("Error en procesos");
-            ex.printStackTrace();
-        }
-        return userAuthenticateResponse;
-    }
+			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(userTokenRequest.getToken());
+			if (usuarioToken == null) {
+				userGetInformationResponse.setErrorCode(100);
+				userGetInformationResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
+				return userGetInformationResponse;
+			} else {
+				userGetInformationResponse.setPersona(usuarioToken.getUsuario().getPersona());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			userGetInformationResponse.setErrorCode(1);
+			userGetInformationResponse.setErrorMessage("Error en procesos");
+		}
+		return userGetInformationResponse;
+	}
 }

@@ -40,6 +40,11 @@ public class UsuarioServicioRest {
     public UserAuthenticateResponse WS_UserAuthenticate(@RequestBody UserAuthenticateRequest userAuthenticateRequest){
         return personaUsuarioNegocio.autenticarUsuario(userAuthenticateRequest);
     }
+    
+    @PostMapping("/WS_UserGetInformacion")
+    public UserGetInformationResponse WS_UserGetInformacion(@RequestBody UserTokenRequest userTokenRequest){
+        return personaUsuarioNegocio.obtenerInformacionUsuario(userTokenRequest);
+    }
 
     @PostMapping("/WS_GetListMovie")
     public GetListMovieResponse WS_GetListMovie(@RequestBody UserTokenRequest userTokenRequest){
