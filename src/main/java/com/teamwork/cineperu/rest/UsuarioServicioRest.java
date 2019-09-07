@@ -20,84 +20,93 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class UsuarioServicioRest {
 
-    @Autowired
-    private PersonaUsuarioNegocio personaUsuarioNegocio;
-    @Autowired
-    private PeliculaNegocio peliculaNegocio;
-    @Autowired
-    private TriviaNegocio triviaNegocio;
-    @Autowired
-    private UsuarioTokenNegocio usuarioTokenNegocio;
-    @Autowired
-    private JmsProducer jmsProducer;
+	@Autowired
+	private PersonaUsuarioNegocio personaUsuarioNegocio;
+	@Autowired
+	private PeliculaNegocio peliculaNegocio;
+	@Autowired
+	private TriviaNegocio triviaNegocio;
+	@Autowired
+	private UsuarioTokenNegocio usuarioTokenNegocio;
+	@Autowired
+	private JmsProducer jmsProducer;
 
-    @PostMapping("/WS_RegisterUser")
-    public EntityWSBase WS_RegisterUser(@RequestBody RegisterUserRequest registerUserRequest){
-        return personaUsuarioNegocio.registrarPersonaUsuario(registerUserRequest);
-    }
+	@PostMapping("/WS_RegisterUser")
+	public EntityWSBase WS_RegisterUser(@RequestBody RegisterUserRequest registerUserRequest) {
+		return personaUsuarioNegocio.registrarPersonaUsuario(registerUserRequest);
+	}
 
-    @PostMapping("/WS_UserAuthenticate")
-    public UserAuthenticateResponse WS_UserAuthenticate(@RequestBody UserAuthenticateRequest userAuthenticateRequest){
-        return personaUsuarioNegocio.autenticarUsuario(userAuthenticateRequest);
-    }
-    
-    @PostMapping("/WS_UserGetInformacion")
-    public UserGetInformationResponse WS_UserGetInformacion(@RequestBody UserTokenRequest userTokenRequest){
-        return personaUsuarioNegocio.obtenerInformacionUsuario(userTokenRequest);
-    }
+	@PostMapping("/WS_UserAuthenticate")
+	public UserAuthenticateResponse WS_UserAuthenticate(@RequestBody UserAuthenticateRequest userAuthenticateRequest) {
+		return personaUsuarioNegocio.autenticarUsuario(userAuthenticateRequest);
+	}
 
-    @PostMapping("/WS_GetListMovie")
-    public GetListMovieResponse WS_GetListMovie(@RequestBody UserTokenRequest userTokenRequest){
-        return peliculaNegocio.listaPelicula(userTokenRequest);
-    }
+	@PostMapping("/WS_UserGetInformation")
+	public UserGetInformationResponse WS_UserGetInformation(@RequestBody UserTokenRequest userTokenRequest) {
+		return personaUsuarioNegocio.obtenerInformacionUsuario(userTokenRequest);
+	}
 
-    @PostMapping("/WS_GetListTrivia")
-    public GetListTriviaResponse WS_GetListTrivia(@RequestBody UserTokenRequest userTokenRequest){
-        return triviaNegocio.listarTrivia(userTokenRequest);
-    }
+	@PostMapping("/WS_UserUpdateInformation")
+	public EntityWSBase WS_UserUpdateInformation(
+			@RequestBody UserUpdateInformationRequest userUpdateInformationRequest) {
+		return personaUsuarioNegocio.actualizarInformacionUsuario(userUpdateInformationRequest);
+	}
 
-    @PostMapping("/WS_RegisterIntentTrivia")
-    public RegisterIntentTriviaResponse WS_RegisterIntentTrivia(@RequestBody RegisterIntentTriviaRequest registerIntentTriviaRequest){
-        return triviaNegocio.registrarIntentoTrivia(registerIntentTriviaRequest);
-    }
+	@PostMapping("/WS_GetListMovie")
+	public GetListMovieResponse WS_GetListMovie(@RequestBody UserTokenRequest userTokenRequest) {
+		return peliculaNegocio.listaPelicula(userTokenRequest);
+	}
 
-    @PostMapping("/WS_GetTriviaUser")
-    public RegisterIntentTriviaResponse WS_GetTriviaUser(@RequestBody GetTriviaUsuarioRequest getTriviaUsuarioRequest){
-        return triviaNegocio.obtenerTriviaUsuario(getTriviaUsuarioRequest);
-    }
+	@PostMapping("/WS_GetListTrivia")
+	public GetListTriviaResponse WS_GetListTrivia(@RequestBody UserTokenRequest userTokenRequest) {
+		return triviaNegocio.listarTrivia(userTokenRequest);
+	}
 
-    @PostMapping("/WS_SendTransactionBuyTicket")
-    public EntityWSBase WS_SendTransactionBuyTicket(@RequestBody SendTransactionBuyTicketRequest sendTransactionBuyTicketRequest){
-        EntityWSBase entityWSBase = new EntityWSBase();
-        entityWSBase.setErrorCode(0);
-        entityWSBase.setErrorMessage("Solicitud enviada a procesar");
+	@PostMapping("/WS_RegisterIntentTrivia")
+	public RegisterIntentTriviaResponse WS_RegisterIntentTrivia(
+			@RequestBody RegisterIntentTriviaRequest registerIntentTriviaRequest) {
+		return triviaNegocio.registrarIntentoTrivia(registerIntentTriviaRequest);
+	}
 
-        try {
-            UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(sendTransactionBuyTicketRequest.getToken());
-            if (usuarioToken == null){
-                entityWSBase.setErrorCode(100);
-                entityWSBase.setErrorMessage("Credencial de acceso vencida o incorrecta");
-                return entityWSBase;
-            }
+	@PostMapping("/WS_GetTriviaUser")
+	public RegisterIntentTriviaResponse WS_GetTriviaUser(@RequestBody GetTriviaUsuarioRequest getTriviaUsuarioRequest) {
+		return triviaNegocio.obtenerTriviaUsuario(getTriviaUsuarioRequest);
+	}
 
-            ObjectMapper mapper = new ObjectMapper();
+	@PostMapping("/WS_SendTransactionBuyTicket")
+	public EntityWSBase WS_SendTransactionBuyTicket(
+			@RequestBody SendTransactionBuyTicketRequest sendTransactionBuyTicketRequest) {
+		EntityWSBase entityWSBase = new EntityWSBase();
+		entityWSBase.setErrorCode(0);
+		entityWSBase.setErrorMessage("Solicitud enviada a procesar");
 
-            Entrada entrada = new Entrada();
-            entrada.setCodigoSeguridad(sendTransactionBuyTicketRequest.getCodigoSeguridad());
-            entrada.setFechaExpiracion(sendTransactionBuyTicketRequest.getFechaExpiracion());
-            entrada.setNombreTitular(sendTransactionBuyTicketRequest.getNombreTitular());
-            entrada.setNumeroTarjeta(sendTransactionBuyTicketRequest.getNumeroTarjeta());
-            entrada.setMonto(20.00);
+		try {
+			UsuarioToken usuarioToken = usuarioTokenNegocio
+					.obtenerUsuarioToken(sendTransactionBuyTicketRequest.getToken());
+			if (usuarioToken == null) {
+				entityWSBase.setErrorCode(100);
+				entityWSBase.setErrorMessage("Credencial de acceso vencida o incorrecta");
+				return entityWSBase;
+			}
 
-            String jsonString = mapper.writeValueAsString(entrada);
-            jmsProducer.enviarRecibir(jsonString);
-            //jmsProducer.send(jsonString);
+			ObjectMapper mapper = new ObjectMapper();
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            entityWSBase.setErrorCode(9);
-            entityWSBase.setErrorMessage("Error al procesar solicitud de cola");
-        }
-        return entityWSBase;
-    }
+			Entrada entrada = new Entrada();
+			entrada.setCodigoSeguridad(sendTransactionBuyTicketRequest.getCodigoSeguridad());
+			entrada.setFechaExpiracion(sendTransactionBuyTicketRequest.getFechaExpiracion());
+			entrada.setNombreTitular(sendTransactionBuyTicketRequest.getNombreTitular());
+			entrada.setNumeroTarjeta(sendTransactionBuyTicketRequest.getNumeroTarjeta());
+			entrada.setMonto(20.00);
+
+			String jsonString = mapper.writeValueAsString(entrada);
+			jmsProducer.enviarRecibir(jsonString);
+			// jmsProducer.send(jsonString);
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			entityWSBase.setErrorCode(9);
+			entityWSBase.setErrorMessage("Error al procesar solicitud de cola");
+		}
+		return entityWSBase;
+	}
 }

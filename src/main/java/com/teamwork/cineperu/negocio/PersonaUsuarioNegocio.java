@@ -7,6 +7,7 @@ import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.RegisterUserRequest;
 import com.teamwork.cineperu.entidad.request.UserAuthenticateRequest;
 import com.teamwork.cineperu.entidad.request.UserTokenRequest;
+import com.teamwork.cineperu.entidad.request.UserUpdateInformationRequest;
 import com.teamwork.cineperu.entidad.response.EntityWSBase;
 import com.teamwork.cineperu.entidad.response.PersonaResponse;
 import com.teamwork.cineperu.entidad.response.UserAuthenticateResponse;
@@ -122,7 +123,6 @@ public class PersonaUsuarioNegocio {
 		userGetInformationResponse.setErrorCode(0);
 		userGetInformationResponse.setErrorMessage("Se obtuvo información del usuario satisfactoriamente");
 		try {
-
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(userTokenRequest.getToken());
 			if (usuarioToken == null) {
 				userGetInformationResponse.setErrorCode(100);
@@ -141,6 +141,32 @@ public class PersonaUsuarioNegocio {
 				personaResponse.setGenero(persona.getGenero().toString());
 				personaResponse.setNombres(persona.getNombres());
 				userGetInformationResponse.setPersona(personaResponse);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			userGetInformationResponse.setErrorCode(1);
+			userGetInformationResponse.setErrorMessage("Error en procesos");
+		}
+		return userGetInformationResponse;
+	}
+
+	public EntityWSBase actualizarInformacionUsuario(UserUpdateInformationRequest userUpdateInformationRequest) {
+		UserGetInformationResponse userGetInformationResponse = new UserGetInformationResponse();
+		userGetInformationResponse.setErrorCode(0);
+		userGetInformationResponse.setErrorMessage("Se actualizo la información del usuario satisfactoriamente");
+		try {
+			UsuarioToken usuarioToken = usuarioTokenNegocio
+					.obtenerUsuarioToken(userUpdateInformationRequest.getToken());
+			if (usuarioToken == null) {
+				userGetInformationResponse.setErrorCode(100);
+				userGetInformationResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
+				return userGetInformationResponse;
+			} else {
+				Persona persona = usuarioToken.getUsuario().getPersona();
+				persona.setDireccion(userUpdateInformationRequest.getDireccion());
+				persona.setEmail(userUpdateInformationRequest.getEmail());
+				personaRepositorio.save(persona);
 			}
 
 		} catch (Exception ex) {
