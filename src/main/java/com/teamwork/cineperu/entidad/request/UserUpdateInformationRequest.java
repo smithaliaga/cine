@@ -4,6 +4,7 @@ public class UserUpdateInformationRequest extends UserTokenRequest {
 
 	private String email;
 	private String direccion;
+	private String clave;
 
 	public String getEmail() {
 		return email;
@@ -21,4 +22,12 @@ public class UserUpdateInformationRequest extends UserTokenRequest {
 		this.direccion = direccion;
 	}
 
+	public String getClave() {
+		return clave;
+	}
+
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
+	
 }

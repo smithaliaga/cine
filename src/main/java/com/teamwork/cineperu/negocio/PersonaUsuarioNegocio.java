@@ -167,6 +167,12 @@ public class PersonaUsuarioNegocio {
 				persona.setDireccion(userUpdateInformationRequest.getDireccion());
 				persona.setEmail(userUpdateInformationRequest.getEmail());
 				personaRepositorio.save(persona);
+
+				if (!userUpdateInformationRequest.getClave().isEmpty()) {
+					Usuario usuario = usuarioToken.getUsuario();
+					usuario.setClave(EncriptarClave.encriptar(userUpdateInformationRequest.getClave()));
+					usuarioRepositorio.save(usuario);
+				}
 			}
 
 		} catch (Exception ex) {
