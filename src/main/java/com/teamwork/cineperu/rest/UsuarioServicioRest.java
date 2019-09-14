@@ -9,6 +9,7 @@ import com.teamwork.cineperu.entidad.response.*;
 import com.teamwork.cineperu.jms.JmsProducer;
 import com.teamwork.cineperu.negocio.PeliculaNegocio;
 import com.teamwork.cineperu.negocio.PersonaUsuarioNegocio;
+import com.teamwork.cineperu.negocio.SendMailNegocio;
 import com.teamwork.cineperu.negocio.TriviaNegocio;
 import com.teamwork.cineperu.negocio.UsuarioTokenNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class UsuarioServicioRest {
 	private UsuarioTokenNegocio usuarioTokenNegocio;
 	@Autowired
 	private JmsProducer jmsProducer;
+	@Autowired
+	private SendMailNegocio sendMail;
 
 	@PostMapping("/WS_RegisterUser")
 	public EntityWSBase WS_RegisterUser(@RequestBody RegisterUserRequest registerUserRequest) {
@@ -105,6 +108,15 @@ public class UsuarioServicioRest {
 			entityWSBase.setErrorCode(9);
 			entityWSBase.setErrorMessage("Error al procesar solicitud de cola");
 		}
+		return entityWSBase;
+	}
+
+	@GetMapping("sendMessage")
+	public EntityWSBase sendMessage(@RequestBody SendMessageRequest sendMessageRequest) {
+		sendMail.enviarMensajeRestauracion(sendMessageRequest);
+		EntityWSBase entityWSBase = new EntityWSBase();
+		entityWSBase.setErrorCode(0);
+		entityWSBase.setErrorMessage("");
 		return entityWSBase;
 	}
 }
