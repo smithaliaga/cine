@@ -100,6 +100,7 @@ public class PersonaUsuarioNegocio {
 				usuarioToken.setToken(UUID.randomUUID() + sdf.format(new Date()));
 				usuarioToken.setEstadoRegistro(true);
 				usuarioToken.setUsuario(usuario);
+				usuarioToken.setTokenFirebase(userAuthenticateRequest.getTokenFirebase());
 
 				usuarioTokenRepositorio.save(usuarioToken);
 
