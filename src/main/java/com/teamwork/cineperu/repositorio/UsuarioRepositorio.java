@@ -10,4 +10,6 @@ public interface UsuarioRepositorio extends CrudRepository<Usuario,Long> {
     @Query("SELECT u FROM Usuario u WHERE u.usuario = :usuario and u.clave = :clave and u.estadoRegistro = 1")
     Usuario buscarUsuarioPorCredencial(@Param("usuario") String usuario, @Param("clave") String clave);
 
+    @Query("SELECT u FROM Usuario u WHERE u.usuario = :usuario and u.estadoRegistro = 1")
+    Usuario buscarUsuario(@Param("usuario") String usuario);
 }

@@ -10,8 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.teamwork.cineperu.entidad.request.SendMessageRequest;
-
 @Service
 public class SendMailNegocio {
 
@@ -23,12 +21,12 @@ public class SendMailNegocio {
 	@Value("${spring.mail.fullname}")
 	private String fullname;
 
-	public void enviarMensajeRestauracion(SendMessageRequest sendMessageRequest) {
+	public void enviarMensajeRestauracion(String correo) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					int numero = ThreadLocalRandom.current().nextInt(1000, 9000);
+					int numero = ThreadLocalRandom.current().nextInt(1000, 9999);
 
 					String titulo = "Solicitud de restauración de contraseña";
 					String texto = "Su nueva contraseña es: " + numero;
@@ -36,7 +34,7 @@ public class SendMailNegocio {
 					MimeMessage mailMessage = javaMailSender.createMimeMessage();
 					MimeMessageHelper message = new MimeMessageHelper(mailMessage, true, "UTF-8");
 					message.setFrom(username, fullname);
-					message.setTo(sendMessageRequest.getCorreo());
+					message.setTo(correo);
 					message.setSubject(titulo);
 					message.setText(texto, true);
 					javaMailSender.send(mailMessage);

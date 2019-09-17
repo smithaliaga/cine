@@ -9,5 +9,4 @@ public interface PersonaRepositorio extends CrudRepository<Persona,Long> {
 
     @Query("SELECT p FROM Persona p WHERE p.dni=:dni")
     Persona buscarPorDNI(@Param("dni") String dni);
-
 }

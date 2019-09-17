@@ -111,12 +111,8 @@ public class UsuarioServicioRest {
 		return entityWSBase;
 	}
 
-	@GetMapping("sendMessage")
-	public EntityWSBase sendMessage(@RequestBody SendMessageRequest sendMessageRequest) {
-		sendMail.enviarMensajeRestauracion(sendMessageRequest);
-		EntityWSBase entityWSBase = new EntityWSBase();
-		entityWSBase.setErrorCode(0);
-		entityWSBase.setErrorMessage("");
-		return entityWSBase;
+	@GetMapping("WS_RecoveryPassword")
+	public EntityWSBase recuperarClave(@RequestBody RecoveryPasswordRequest sendMessageRequest) {
+		return personaUsuarioNegocio.recuperarClave(sendMessageRequest);
 	}
 }

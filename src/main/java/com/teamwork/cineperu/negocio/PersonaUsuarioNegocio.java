@@ -4,6 +4,7 @@ import com.teamwork.cineperu.Util.EncriptarClave;
 import com.teamwork.cineperu.entidad.Persona;
 import com.teamwork.cineperu.entidad.Usuario;
 import com.teamwork.cineperu.entidad.UsuarioToken;
+import com.teamwork.cineperu.entidad.request.RecoveryPasswordRequest;
 import com.teamwork.cineperu.entidad.request.RegisterUserRequest;
 import com.teamwork.cineperu.entidad.request.UserAuthenticateRequest;
 import com.teamwork.cineperu.entidad.request.UserTokenRequest;
@@ -33,6 +34,8 @@ public class PersonaUsuarioNegocio {
 	private UsuarioTokenRepositorio usuarioTokenRepositorio;
 	@Autowired
 	private UsuarioTokenNegocio usuarioTokenNegocio;
+	@Autowired
+	private SendMailNegocio sendMailNegocio;
 
 	public EntityWSBase registrarPersonaUsuario(RegisterUserRequest registerUserRequest) {
 		EntityWSBase entityWSBase = new EntityWSBase();
@@ -182,5 +185,28 @@ public class PersonaUsuarioNegocio {
 			userGetInformationResponse.setErrorMessage("Error en procesos");
 		}
 		return userGetInformationResponse;
+	}
+
+	public EntityWSBase recuperarClave(RecoveryPasswordRequest recoveryPasswordRequest) {
+		EntityWSBase entityWSBase = new EntityWSBase();
+		entityWSBase.setErrorCode(0);
+		entityWSBase.setErrorMessage("Se envío el correo para iniciar el proceso de restauración");
+		try {
+			Usuario usuario = usuarioRepositorio.buscarUsuario(recoveryPasswordRequest.getUsuario());
+			if (usuario == null) {
+				entityWSBase.setErrorCode(10);
+				entityWSBase.setErrorMessage("Usuario no existe");
+				return entityWSBase;
+			} else {
+				Persona persona = usuario.getPersona();
+				sendMailNegocio.enviarMensajeRestauracion(persona.getEmail());
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			entityWSBase.setErrorCode(1);
+			entityWSBase.setErrorMessage("Error en procesos");
+		}
+		return entityWSBase;
 	}
 }

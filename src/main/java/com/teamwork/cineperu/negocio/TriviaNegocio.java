@@ -36,8 +36,6 @@ public class TriviaNegocio {
     private UsuarioTokenNegocio usuarioTokenNegocio;
     @Autowired
     private TriviaUsuarioRepositorio triviaUsuarioRepositorio;
-    
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GetListTriviaResponse listarTrivia(UserTokenRequest userTokenRequest){
         GetListTriviaResponse getListTriviaResponse = new GetListTriviaResponse();
