@@ -2,6 +2,7 @@ package com.teamwork.cineperu.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teamwork.cineperu.bean.BeanUsuarioTokenFirebaseDTO;
 import com.teamwork.cineperu.entidad.Entrada;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.*;
@@ -9,10 +10,10 @@ import com.teamwork.cineperu.entidad.response.*;
 import com.teamwork.cineperu.jms.JmsProducer;
 import com.teamwork.cineperu.negocio.PeliculaNegocio;
 import com.teamwork.cineperu.negocio.PersonaUsuarioNegocio;
-import com.teamwork.cineperu.negocio.SendMailNegocio;
 import com.teamwork.cineperu.negocio.TriviaNegocio;
 import com.teamwork.cineperu.negocio.UsuarioTokenNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,8 +30,6 @@ public class UsuarioServicioRest {
 	private UsuarioTokenNegocio usuarioTokenNegocio;
 	@Autowired
 	private JmsProducer jmsProducer;
-	@Autowired
-	private SendMailNegocio sendMail;
 
 	@PostMapping("/WS_RegisterUser")
 	public EntityWSBase WS_RegisterUser(@RequestBody RegisterUserRequest registerUserRequest) {
@@ -115,4 +114,6 @@ public class UsuarioServicioRest {
 	public EntityWSBase recuperarClave(@RequestBody RecoveryPasswordRequest sendMessageRequest) {
 		return personaUsuarioNegocio.recuperarClave(sendMessageRequest);
 	}
+	
+	
 }

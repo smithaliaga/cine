@@ -1,6 +1,9 @@
 package com.teamwork.cineperu.repositorio;
 
 import com.teamwork.cineperu.entidad.UsuarioToken;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,4 +19,7 @@ public interface UsuarioTokenRepositorio extends CrudRepository<UsuarioToken,Str
     @Modifying
     @Query("UPDATE UsuarioToken u SET u.estadoRegistro = 0 WHERE u.usuario.codigoUsuario = :codigoUsuario")
     void descativarTokenActivo(@Param("codigoUsuario") Long codigoUsuario);
+    
+    @Query("SELECT u FROM UsuarioToken u WHERE u.estadoRegistro = 1")
+    List<UsuarioToken> obtenerUsuariosActivos();
 }
