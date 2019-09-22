@@ -2,18 +2,17 @@ package com.teamwork.cineperu.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamwork.cineperu.bean.BeanUsuarioTokenFirebaseDTO;
 import com.teamwork.cineperu.entidad.Entrada;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.*;
 import com.teamwork.cineperu.entidad.response.*;
 import com.teamwork.cineperu.jms.JmsProducer;
+import com.teamwork.cineperu.negocio.CineNegocio;
 import com.teamwork.cineperu.negocio.PeliculaNegocio;
 import com.teamwork.cineperu.negocio.PersonaUsuarioNegocio;
 import com.teamwork.cineperu.negocio.TriviaNegocio;
 import com.teamwork.cineperu.negocio.UsuarioTokenNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +27,8 @@ public class UsuarioServicioRest {
 	private TriviaNegocio triviaNegocio;
 	@Autowired
 	private UsuarioTokenNegocio usuarioTokenNegocio;
+	@Autowired
+	private CineNegocio cineNegocio;
 	@Autowired
 	private JmsProducer jmsProducer;
 
@@ -115,5 +116,8 @@ public class UsuarioServicioRest {
 		return personaUsuarioNegocio.recuperarClave(sendMessageRequest);
 	}
 	
-	
+	@GetMapping("WS_GetListCine")
+	public GetListCineResponse WS_GetListCine(@RequestBody UserTokenRequest userTokenRequest) {
+		return cineNegocio.listaPelicula(userTokenRequest);
+	}
 }

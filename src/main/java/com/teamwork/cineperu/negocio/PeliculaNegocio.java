@@ -5,7 +5,6 @@ import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.UserTokenRequest;
 import com.teamwork.cineperu.entidad.response.GetListMovieResponse;
 import com.teamwork.cineperu.repositorio.PeliculaRepositorio;
-import com.teamwork.cineperu.repositorio.UsuarioTokenRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +15,6 @@ public class PeliculaNegocio {
 
     @Autowired
     private PeliculaRepositorio peliculaRepositorio;
-    @Autowired
-    private UsuarioTokenRepositorio usuarioTokenRepositorio;
     @Autowired
     private UsuarioTokenNegocio usuarioTokenNegocio;
 
