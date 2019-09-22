@@ -116,7 +116,7 @@ public class UsuarioServicioRest {
 		return personaUsuarioNegocio.recuperarClave(sendMessageRequest);
 	}
 	
-	@GetMapping("WS_GetListCine")
+	@PostMapping("WS_GetListCine")
 	public GetListCineResponse WS_GetListCine(@RequestBody UserTokenRequest userTokenRequest) {
 		return cineNegocio.listaPelicula(userTokenRequest);
 	}
