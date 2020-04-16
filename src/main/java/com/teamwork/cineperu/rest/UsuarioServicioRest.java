@@ -73,6 +73,11 @@ public class UsuarioServicioRest {
 	public RegisterIntentTriviaResponse WS_GetTriviaUser(@RequestBody GetTriviaUsuarioRequest getTriviaUsuarioRequest) {
 		return triviaNegocio.obtenerTriviaUsuario(getTriviaUsuarioRequest);
 	}
+	
+	@PostMapping("/WS_GetListHorario")
+	public GetListHorarioResponse WS_GetListHorario(@RequestBody GetListHorarioRequest getListHorarioRequest) {
+		return peliculaNegocio.listaHorario(getListHorarioRequest);
+	}
 
 	@PostMapping("/WS_SendTransactionBuyTicket")
 	public EntityWSBase WS_SendTransactionBuyTicket(
