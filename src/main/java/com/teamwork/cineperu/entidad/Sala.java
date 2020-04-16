@@ -10,48 +10,32 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Horario {
+public class Sala {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long codigoHorario;
-	private String descripcion;
-	@ManyToOne
-	@JoinColumn(name = "codigo_pelicula")
-	@JsonIgnore
-	private Pelicula pelicula;
+	private Long codigoSala;
+	private String nombre;
 	@ManyToOne
 	@JoinColumn(name = "codigo_cine")
 	@JsonIgnore
 	private Cine cine;
-	@ManyToOne
-	@JoinColumn(name = "codigo_sala")
-	@JsonIgnore
-	private Sala sala;
 	private boolean estadoRegistro;
 
-	public Long getCodigoHorario() {
-		return codigoHorario;
+	public Long getCodigoSala() {
+		return codigoSala;
 	}
 
-	public void setCodigoHorario(Long codigoHorario) {
-		this.codigoHorario = codigoHorario;
+	public void setCodigoSala(Long codigoSala) {
+		this.codigoSala = codigoSala;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public Pelicula getPelicula() {
-		return pelicula;
-	}
-
-	public void setPelicula(Pelicula pelicula) {
-		this.pelicula = pelicula;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public Cine getCine() {
