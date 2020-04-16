@@ -58,7 +58,7 @@ public class PeliculaNegocio {
                 return getListHorarioResponse;
             }
 
-            List<Horario> listaPelicula = (List<Horario>) horarioRepositorio.buscarPorPelicula(getListHorarioRequest.getCodigoPelicula());
+            List<Horario> listaPelicula = (List<Horario>) horarioRepositorio.buscarPorPelicula(getListHorarioRequest.getCodigoCine(), getListHorarioRequest.getCodigoPelicula());
             getListHorarioResponse.setLista(listaPelicula);
             
         }catch (Exception ex){
