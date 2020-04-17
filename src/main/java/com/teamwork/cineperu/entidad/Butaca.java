@@ -24,7 +24,6 @@ public class Butaca {
 	@JoinColumn(name = "codigo_estado_butaca")
 	@JsonIgnore
 	private EstadoButaca estadoButaca;
-	private boolean estadoRegistro;
 
 	public Long getCodigoButaca() {
 		return codigoButaca;
@@ -48,14 +47,6 @@ public class Butaca {
 
 	public void setSala(Sala sala) {
 		this.sala = sala;
-	}
-
-	public boolean isEstadoRegistro() {
-		return estadoRegistro;
-	}
-
-	public void setEstadoRegistro(boolean estadoRegistro) {
-		this.estadoRegistro = estadoRegistro;
 	}
 
 }
