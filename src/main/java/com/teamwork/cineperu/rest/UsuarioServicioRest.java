@@ -78,6 +78,11 @@ public class UsuarioServicioRest {
 	public GetListHorarioResponse WS_GetListHorario(@RequestBody GetListHorarioRequest getListHorarioRequest) {
 		return peliculaNegocio.listaHorario(getListHorarioRequest);
 	}
+	
+	@PostMapping("/WS_GetListButaca")
+	public GetListButacaResponse WS_GetListButaca(@RequestBody GetListButacaRequest getListButacaRequest) {
+		return peliculaNegocio.listaButaca(getListButacaRequest);
+	}
 
 	@PostMapping("/WS_SendTransactionBuyTicket")
 	public EntityWSBase WS_SendTransactionBuyTicket(
