@@ -1,18 +1,18 @@
 package com.teamwork.cineperu.entidad.response;
 
-import com.teamwork.cineperu.entidad.Horario;
+import com.teamwork.cineperu.bean.BeanHorario;
 
 import java.util.List;
 
 public class GetListHorarioResponse extends EntityWSBase {
 
-	private List<Horario> lista;
+	private List<BeanHorario> lista;
 
-	public List<Horario> getLista() {
+	public List<BeanHorario> getLista() {
 		return lista;
 	}
 
-	public void setLista(List<Horario> lista) {
+	public void setLista(List<BeanHorario> lista) {
 		this.lista = lista;
 	}
 

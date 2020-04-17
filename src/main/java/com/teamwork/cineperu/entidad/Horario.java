@@ -62,6 +62,14 @@ public class Horario {
 		this.cine = cine;
 	}
 
+	public Sala getSala() {
+		return sala;
+	}
+
+	public void setSala(Sala sala) {
+		this.sala = sala;
+	}
+
 	public boolean isEstadoRegistro() {
 		return estadoRegistro;
 	}

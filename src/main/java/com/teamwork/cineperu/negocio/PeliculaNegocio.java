@@ -1,6 +1,7 @@
 package com.teamwork.cineperu.negocio;
 
 import com.teamwork.cineperu.bean.BeanButaca;
+import com.teamwork.cineperu.bean.BeanHorario;
 import com.teamwork.cineperu.entidad.Butaca;
 import com.teamwork.cineperu.entidad.Horario;
 import com.teamwork.cineperu.entidad.Pelicula;
@@ -66,8 +67,22 @@ public class PeliculaNegocio {
                 return getListHorarioResponse;
             }
 
-            List<Horario> listaPelicula = (List<Horario>) horarioRepositorio.buscarPorPelicula(getListHorarioRequest.getCodigoCine(), getListHorarioRequest.getCodigoPelicula());
-            getListHorarioResponse.setLista(listaPelicula);
+            List<BeanHorario> listaBeanHorario = new ArrayList<>();
+            List<Horario> listaHorario = (List<Horario>) horarioRepositorio.buscarPorPelicula(getListHorarioRequest.getCodigoCine(), getListHorarioRequest.getCodigoPelicula());
+            
+            for (Horario horario : listaHorario) {
+
+            	BeanHorario beanHorario = new BeanHorario();
+            	beanHorario.setCodigoHorario(horario.getCodigoHorario());
+            	beanHorario.setDescripcionHorario(horario.getDescripcion());
+            	beanHorario.setCodigoSala(horario.getSala().getCodigoSala());
+            	beanHorario.setNombreSala(horario.getSala().getNombre());
+            	
+            	listaBeanHorario.add(beanHorario);
+            	
+            }
+            
+            getListHorarioResponse.setLista(listaBeanHorario);
             
         }catch (Exception ex){
         	getListHorarioResponse.setErrorCode(0);
