@@ -1,17 +1,17 @@
 package com.teamwork.cineperu.entidad.response;
 
-import com.teamwork.cineperu.bean.BeanMontoPago;
+import com.teamwork.cineperu.bean.BeanPago;
 
 public class RealizarPagoResponse extends EntityWSBase {
 
-	private BeanMontoPago montoPago;
+	private BeanPago pago;
 
-	public BeanMontoPago getMontoPago() {
-		return montoPago;
+	public BeanPago getPago() {
+		return pago;
 	}
 
-	public void setMontoPago(BeanMontoPago montoPago) {
-		this.montoPago = montoPago;
+	public void setPago(BeanPago pago) {
+		this.pago = pago;
 	}
 
 }

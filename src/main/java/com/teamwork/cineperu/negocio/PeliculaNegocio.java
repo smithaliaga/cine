@@ -1,8 +1,10 @@
 package com.teamwork.cineperu.negocio;
 
+import com.teamwork.cineperu.Util.UtilString;
 import com.teamwork.cineperu.bean.BeanButaca;
 import com.teamwork.cineperu.bean.BeanHorario;
 import com.teamwork.cineperu.bean.BeanMontoPago;
+import com.teamwork.cineperu.bean.BeanPago;
 import com.teamwork.cineperu.entidad.Butaca;
 import com.teamwork.cineperu.entidad.EstadoButaca;
 import com.teamwork.cineperu.entidad.Horario;
@@ -24,7 +26,9 @@ import com.teamwork.cineperu.repositorio.PeliculaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -218,11 +222,16 @@ public class PeliculaNegocio {
 			
 			double precio = 15.00;
 
-			BeanMontoPago montoPago = new BeanMontoPago();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HHmmss");
+			
+			BeanPago montoPago = new BeanPago();
+			montoPago.setNumeroTarjetaOfuscado(UtilString.ofuscarTarjeta(realizarPagoRequest.getNumeroTarjeta()));
+			montoPago.setFechaTransaccion(sdf.format(new Date()));
 			montoPago.setSubTotal(precio * realizarPagoRequest.getButacas().size());
 			montoPago.setIgv(montoPago.getSubTotal() * 0.18);
 			montoPago.setTotal(montoPago.getSubTotal() + montoPago.getIgv());
-			realizarPagoResponse.setMontoPago(montoPago);
+			
+			realizarPagoResponse.setPago(montoPago);
 
 		} catch (Exception ex) {
 			realizarPagoResponse.setErrorCode(0);
