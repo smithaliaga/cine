@@ -4,17 +4,20 @@ import com.teamwork.cineperu.bean.BeanButaca;
 import com.teamwork.cineperu.bean.BeanHorario;
 import com.teamwork.cineperu.bean.BeanMontoPago;
 import com.teamwork.cineperu.entidad.Butaca;
+import com.teamwork.cineperu.entidad.EstadoButaca;
 import com.teamwork.cineperu.entidad.Horario;
 import com.teamwork.cineperu.entidad.Pelicula;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.GetListButacaRequest;
 import com.teamwork.cineperu.entidad.request.GetListHorarioRequest;
 import com.teamwork.cineperu.entidad.request.GetMontoPagoRequest;
+import com.teamwork.cineperu.entidad.request.RealizarPagoRequest;
 import com.teamwork.cineperu.entidad.request.UserTokenRequest;
 import com.teamwork.cineperu.entidad.response.GetListButacaResponse;
 import com.teamwork.cineperu.entidad.response.GetListHorarioResponse;
 import com.teamwork.cineperu.entidad.response.GetListMovieResponse;
 import com.teamwork.cineperu.entidad.response.GetMontoPagoResponse;
+import com.teamwork.cineperu.entidad.response.RealizarPagoResponse;
 import com.teamwork.cineperu.repositorio.ButacaRepositorio;
 import com.teamwork.cineperu.repositorio.HorarioRepositorio;
 import com.teamwork.cineperu.repositorio.PeliculaRepositorio;
@@ -179,4 +182,54 @@ public class PeliculaNegocio {
 		}
 		return getMontoPagoResponse;
 	}
+	
+	public RealizarPagoResponse registrarPago(RealizarPagoRequest realizarPagoRequest) {
+		RealizarPagoResponse realizarPagoResponse = new RealizarPagoResponse();
+		realizarPagoResponse.setErrorCode(0);
+		realizarPagoResponse.setErrorMessage("");
+		try {
+			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(realizarPagoRequest.getToken());
+			if (usuarioToken == null) {
+				realizarPagoResponse.setErrorCode(100);
+				realizarPagoResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
+				return realizarPagoResponse;
+			}
+
+			List<Butaca> listaButaca = (List<Butaca>) butacaRepositorio
+					.buscarPorSala(realizarPagoRequest.getCodigoSala());
+
+			for (Butaca butaca : listaButaca.stream()
+					.filter(p -> realizarPagoRequest.getButacas().contains(p.getCodigoButaca()))
+					.collect(Collectors.toList())) {
+
+				if (butaca.getEstadoButaca().getCodigoEstadoButaca() != 1) {
+					realizarPagoResponse.setErrorCode(201);
+					realizarPagoResponse.setErrorMessage("El asiento " + butaca.getNombre() + " en la fila "
+							+ butaca.getFila() + " ya no se encuentra disponible");
+					return realizarPagoResponse;
+				}
+
+				// CAMBIAMOS EL ESTADO A PAGADO
+				EstadoButaca estadoButaca = new EstadoButaca();
+				estadoButaca.setCodigoEstadoButaca(new Long(2));
+				butaca.setEstadoButaca(estadoButaca);
+				butacaRepositorio.save(butaca);
+			}
+			
+			double precio = 15.00;
+
+			BeanMontoPago montoPago = new BeanMontoPago();
+			montoPago.setSubTotal(precio * realizarPagoRequest.getButacas().size());
+			montoPago.setIgv(montoPago.getSubTotal() * 0.18);
+			montoPago.setTotal(montoPago.getSubTotal() + montoPago.getIgv());
+			realizarPagoResponse.setMontoPago(montoPago);
+
+		} catch (Exception ex) {
+			realizarPagoResponse.setErrorCode(0);
+			realizarPagoResponse.setErrorMessage("Error en procesos");
+			ex.printStackTrace();
+		}
+		return realizarPagoResponse;
+	}
+	
 }

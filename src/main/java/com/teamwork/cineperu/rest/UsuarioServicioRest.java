@@ -85,8 +85,13 @@ public class UsuarioServicioRest {
 	}
 	
 	@PostMapping("/WS_GetMontoPago")
-	public GetMontoPagoResponse WS_GetListButaca(@RequestBody GetMontoPagoRequest getMontoPagoRequest) {
+	public GetMontoPagoResponse WS_GetMontoPago(@RequestBody GetMontoPagoRequest getMontoPagoRequest) {
 		return peliculaNegocio.consultarMontoPago(getMontoPagoRequest);
+	}
+	
+	@PostMapping("/WS_RealizarPago")
+	public RealizarPagoResponse WS_RealizarPago(@RequestBody RealizarPagoRequest realizarPagoRequest) {
+		return peliculaNegocio.registrarPago(realizarPagoRequest);
 	}
 
 	@PostMapping("/WS_SendTransactionBuyTicket")
