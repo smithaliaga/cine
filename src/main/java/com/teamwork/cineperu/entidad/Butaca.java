@@ -24,6 +24,7 @@ public class Butaca {
 	@JoinColumn(name = "codigo_estado_butaca")
 	@JsonIgnore
 	private EstadoButaca estadoButaca;
+	private String fila;
 
 	public Long getCodigoButaca() {
 		return codigoButaca;
@@ -47,6 +48,22 @@ public class Butaca {
 
 	public void setSala(Sala sala) {
 		this.sala = sala;
+	}
+
+	public EstadoButaca getEstadoButaca() {
+		return estadoButaca;
+	}
+
+	public void setEstadoButaca(EstadoButaca estadoButaca) {
+		this.estadoButaca = estadoButaca;
+	}
+
+	public String getFila() {
+		return fila;
+	}
+
+	public void setFila(String fila) {
+		this.fila = fila;
 	}
 
 }
