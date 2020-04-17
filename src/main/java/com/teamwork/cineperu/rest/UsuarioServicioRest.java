@@ -83,6 +83,11 @@ public class UsuarioServicioRest {
 	public GetListButacaResponse WS_GetListButaca(@RequestBody GetListButacaRequest getListButacaRequest) {
 		return peliculaNegocio.listaButaca(getListButacaRequest);
 	}
+	
+	@PostMapping("/WS_GetMontoPago")
+	public GetMontoPagoResponse WS_GetListButaca(@RequestBody GetMontoPagoRequest getMontoPagoRequest) {
+		return peliculaNegocio.consultarMontoPago(getMontoPagoRequest);
+	}
 
 	@PostMapping("/WS_SendTransactionBuyTicket")
 	public EntityWSBase WS_SendTransactionBuyTicket(
