@@ -49,12 +49,14 @@ public class PeliculaNegocio {
 		getListMovieResponse.setErrorCode(0);
 		getListMovieResponse.setErrorMessage("");
 		try {
+			/*
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(userTokenRequest.getToken());
 			if (usuarioToken == null) {
 				getListMovieResponse.setErrorCode(100);
 				getListMovieResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return getListMovieResponse;
 			}
+			*/
 
 			List<Pelicula> listaPelicula = (List<Pelicula>) peliculaRepositorio.findAll();
 			getListMovieResponse.setLista(listaPelicula);
@@ -71,12 +73,14 @@ public class PeliculaNegocio {
 		getListHorarioResponse.setErrorCode(0);
 		getListHorarioResponse.setErrorMessage("");
 		try {
+			/*
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(getListHorarioRequest.getToken());
 			if (usuarioToken == null) {
 				getListHorarioResponse.setErrorCode(100);
 				getListHorarioResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return getListHorarioResponse;
 			}
+			*/
 
 			List<BeanHorario> listaBeanHorario = new ArrayList<>();
 			List<Horario> listaHorario = (List<Horario>) horarioRepositorio.buscarPorPelicula(
@@ -109,12 +113,14 @@ public class PeliculaNegocio {
 		getListButacaResponse.setErrorCode(0);
 		getListButacaResponse.setErrorMessage("");
 		try {
+			/*
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(getListButacaRequest.getToken());
 			if (usuarioToken == null) {
 				getListButacaResponse.setErrorCode(100);
 				getListButacaResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return getListButacaResponse;
 			}
+			*/
 
 			List<BeanButaca> listaBeanButaca = new ArrayList<>();
 			List<Butaca> listaButaca = (List<Butaca>) butacaRepositorio
@@ -148,12 +154,14 @@ public class PeliculaNegocio {
 		getMontoPagoResponse.setErrorCode(0);
 		getMontoPagoResponse.setErrorMessage("");
 		try {
+			/*
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(getMontoPagoRequest.getToken());
 			if (usuarioToken == null) {
 				getMontoPagoResponse.setErrorCode(100);
 				getMontoPagoResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return getMontoPagoResponse;
 			}
+			*/
 
 			List<Butaca> listaButaca = (List<Butaca>) butacaRepositorio
 					.buscarPorSala(getMontoPagoRequest.getCodigoSala());
@@ -192,12 +200,14 @@ public class PeliculaNegocio {
 		realizarPagoResponse.setErrorCode(0);
 		realizarPagoResponse.setErrorMessage("");
 		try {
+			/*
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(realizarPagoRequest.getToken());
 			if (usuarioToken == null) {
 				realizarPagoResponse.setErrorCode(100);
 				realizarPagoResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
 				return realizarPagoResponse;
 			}
+			*/
 
 			List<Butaca> listaButaca = (List<Butaca>) butacaRepositorio
 					.buscarPorSala(realizarPagoRequest.getCodigoSala());
