@@ -8,7 +8,9 @@ import com.teamwork.cineperu.bean.BeanPago;
 import com.teamwork.cineperu.entidad.Butaca;
 import com.teamwork.cineperu.entidad.EstadoButaca;
 import com.teamwork.cineperu.entidad.Horario;
+import com.teamwork.cineperu.entidad.Pago;
 import com.teamwork.cineperu.entidad.Pelicula;
+import com.teamwork.cineperu.entidad.Sala;
 import com.teamwork.cineperu.entidad.UsuarioToken;
 import com.teamwork.cineperu.entidad.request.GetListButacaRequest;
 import com.teamwork.cineperu.entidad.request.GetListHorarioRequest;
@@ -22,6 +24,7 @@ import com.teamwork.cineperu.entidad.response.GetMontoPagoResponse;
 import com.teamwork.cineperu.entidad.response.RealizarPagoResponse;
 import com.teamwork.cineperu.repositorio.ButacaRepositorio;
 import com.teamwork.cineperu.repositorio.HorarioRepositorio;
+import com.teamwork.cineperu.repositorio.PagoRepositorio;
 import com.teamwork.cineperu.repositorio.PeliculaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,8 @@ public class PeliculaNegocio {
 	private HorarioRepositorio horarioRepositorio;
 	@Autowired
 	private ButacaRepositorio butacaRepositorio;
+	@Autowired
+	private PagoRepositorio pagoRepositorio;
 
 	public GetListMovieResponse listaPelicula(UserTokenRequest userTokenRequest) {
 		GetListMovieResponse getListMovieResponse = new GetListMovieResponse();
@@ -200,8 +205,9 @@ public class PeliculaNegocio {
 		realizarPagoResponse.setErrorCode(0);
 		realizarPagoResponse.setErrorMessage("");
 		try {
-			/*
+			
 			UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(realizarPagoRequest.getToken());
+			/*
 			if (usuarioToken == null) {
 				realizarPagoResponse.setErrorCode(100);
 				realizarPagoResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
@@ -240,6 +246,19 @@ public class PeliculaNegocio {
 			montoPago.setSubTotal(precio * realizarPagoRequest.getButacas().size());
 			montoPago.setIgv(montoPago.getSubTotal() * 0.18);
 			montoPago.setTotal(montoPago.getSubTotal() + montoPago.getIgv());
+			
+			Sala sala = new Sala();
+			sala.setCodigoSala(realizarPagoRequest.getCodigoSala());
+			
+			Pago pago = new Pago();
+			pago.setCodigoUsuario(usuarioToken != null ? usuarioToken.getUsuario().getCodigoUsuario() : null);
+			pago.setIgv(montoPago.getIgv());
+			pago.setSubTotal(montoPago.getSubTotal());
+			pago.setTotal(montoPago.getTotal());
+			pago.setNumeroTarjeta(montoPago.getNumeroTarjetaOfuscado());
+			pago.setSala(sala);
+			
+			pagoRepositorio.save(pago);
 			
 			realizarPagoResponse.setPago(montoPago);
 
