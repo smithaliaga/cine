@@ -24,14 +24,14 @@ public class CineNegocio {
 		getListCineResponse.setErrorCode(0);
         getListCineResponse.setErrorMessage("");
         try{
-        	/*
+        	
             UsuarioToken usuarioToken = usuarioTokenNegocio.obtenerUsuarioToken(userTokenRequest.getToken());
             if (usuarioToken == null){
             	getListCineResponse.setErrorCode(100);
                 getListCineResponse.setErrorMessage("Credencial de acceso vencida o incorrecta");
                 return getListCineResponse;
             }
-            */
+            
 
             List<Cine> listaPelicula = (List<Cine>) cineRepositorio.findAll();
             getListCineResponse.setLista(listaPelicula);
