@@ -9,6 +9,7 @@ import com.teamwork.cineperu.entidad.Butaca;
 import com.teamwork.cineperu.entidad.EstadoButaca;
 import com.teamwork.cineperu.entidad.Horario;
 import com.teamwork.cineperu.entidad.Pago;
+import com.teamwork.cineperu.entidad.PagoButaca;
 import com.teamwork.cineperu.entidad.Pelicula;
 import com.teamwork.cineperu.entidad.Sala;
 import com.teamwork.cineperu.entidad.UsuarioToken;
@@ -24,6 +25,7 @@ import com.teamwork.cineperu.entidad.response.GetMontoPagoResponse;
 import com.teamwork.cineperu.entidad.response.RealizarPagoResponse;
 import com.teamwork.cineperu.repositorio.ButacaRepositorio;
 import com.teamwork.cineperu.repositorio.HorarioRepositorio;
+import com.teamwork.cineperu.repositorio.PagoButacaRepositorio;
 import com.teamwork.cineperu.repositorio.PagoRepositorio;
 import com.teamwork.cineperu.repositorio.PeliculaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,8 @@ public class PeliculaNegocio {
 	private ButacaRepositorio butacaRepositorio;
 	@Autowired
 	private PagoRepositorio pagoRepositorio;
+	@Autowired
+	private PagoButacaRepositorio pagoButacaRepositorio;
 
 	public GetListMovieResponse listaPelicula(UserTokenRequest userTokenRequest) {
 		GetListMovieResponse getListMovieResponse = new GetListMovieResponse();
@@ -259,6 +263,20 @@ public class PeliculaNegocio {
 			pago.setSala(sala);
 			
 			pagoRepositorio.save(pago);
+			
+			for (long codigoButaca : realizarPagoRequest.getButacas()) {
+				
+				Butaca butaca = new Butaca();
+				butaca.setCodigoButaca(codigoButaca);
+				
+				PagoButaca pagoButaca = new PagoButaca();
+				pagoButaca.setButaca(butaca);				
+				pagoButaca.setPago(pago);
+				pagoButaca.setPrecio(precio);
+				
+				pagoButacaRepositorio.save(pagoButaca);
+				
+			}
 			
 			realizarPagoResponse.setPago(montoPago);
 
