@@ -58,12 +58,19 @@
 	</dependencies>
 
 	<build>
-		<finalName>${jboss.deploy.finalName}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+				    <finalName>${jboss.deploy.finalName}</finalName>
+				</configuration>
+			    </plugin>
 			<plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
