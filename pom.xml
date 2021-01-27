@@ -58,7 +58,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>cine</finalName>
+		<finalName>${jboss.deploy.finalName}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
