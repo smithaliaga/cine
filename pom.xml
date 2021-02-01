@@ -84,7 +84,7 @@
                     <port>${jboss.deploy.portnumber}</port>
                     <username>${jboss.deploy.user}</username>
                     <password>${jboss.deploy.password}</password>
-                    <name>${jboss.deploy.finalName}.war</name>
+                    <name>${jboss.deploy.finalName}.${jboss.deploy.packaging}</name>
                 </configuration>
                 <executions>
                     <!-- Undeploy the application on clean -->
